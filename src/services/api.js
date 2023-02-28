@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const serverUrl = "http://localhost:8000/api";
+// const serverUrl = "http://localhost:8000/api";
+const serverUrl = "https://covid-management-api.onrender.com/api";
 
 export const loginUser = async (user) => {
   return await axios.post(`${serverUrl}/login`, user);
