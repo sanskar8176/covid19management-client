@@ -9,7 +9,7 @@ import {
   FormGroup,
   styled,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { storeToken, storeUser } from "../services/LocalStorageService.js";
 
 import { loginUser } from "../services/api.js";
@@ -28,7 +28,7 @@ const Container = styled(FormGroup)`
 `;
 
 const Login = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [error, setError] = useState({
     status: false,
@@ -48,7 +48,7 @@ const Login = () => {
       setError({ status: true, msg: "All fields are required", type: "error" });
     } else {
       const res = await loginUser(user);
-      console.log(res);
+      // console.log(res);
       if (res.data.status === "success") {
         //set token
         storeToken(res.data.token);
@@ -56,12 +56,15 @@ const Login = () => {
         const userstring = JSON.stringify(res.data.user);
 
         storeUser(userstring);
-        setError({ status: true, msg: "Login Successfully", type: "success" });
+        setError({ status: true, msg: res.data.message, type: "success" });
 
-        // login pr dashboard me nhi redirect app.js ya login.js me useEffect try krk dekhna 
+        // login pr dashboard me nhi redirect app.js ya login.js 
 
         //  setTimeout(()=>{
-        navigate(`/${res.data.user.role}`);
+          
+        // navigate(`/${res.data.user.role}`);
+        window.location.href = `/${res.data.user.role}`;
+
         // window.location.reload();
         // }, 500)
       } else {
@@ -70,6 +73,7 @@ const Login = () => {
       }
     }
   };
+
 
   return (
     <>
@@ -97,6 +101,7 @@ const Login = () => {
             value={password}
             id="my-input"
             required="true"
+            // type="password"
           />
         </FormControl>
 

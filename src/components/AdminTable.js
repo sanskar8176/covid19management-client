@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {Button, Alert} from '@mui/material'
 import {approveStateCovidData, getStateCovidDataForAdmin} from '../services/api.js'
-import { getToken, getUser } from '../services/LocalStorageService.js';
+import { getToken } from '../services/LocalStorageService.js';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -45,7 +45,6 @@ export default function AdminTables() {
   const [data, setData] = useState([]);
 
   const token = getToken()
-  const user = JSON.parse(getUser());
 
     
   const getData=async()=>{
@@ -63,7 +62,7 @@ export default function AdminTables() {
 
 useEffect(() => {
   getData();
-}, [])
+},[])
 
 const calculatDate = (Isodate)=>{
   var date = new Date(Isodate);
@@ -83,7 +82,7 @@ const calculatDate = (Isodate)=>{
 
 const approveData = async(id)=>{
 
-  console.log(id," id and token" ,token);
+  // console.log(id," id and token" ,token);
  const res = await approveStateCovidData(id, token);
 
  if(res.data.status==='success'){
@@ -102,7 +101,7 @@ else{
 
     return (
 
-    <TableContainer component={Paper} injectFirst>
+    <TableContainer component={Paper} >
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
@@ -118,7 +117,7 @@ else{
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((data) => (
+          {data.sort((a,b) => b.state - a.state).map((data) => (
             <StyledTableRow key={data._id}>
               <StyledTableCell component="th" scope="row">
                 {data.state}

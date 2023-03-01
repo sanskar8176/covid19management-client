@@ -37,8 +37,7 @@ const AddStateCovidData = () => {
   });
 
   const [data, setData] = useState(initialValue);
-  const { totalcases, recovered, activecases, death, vaccinated, createdon } =
-    data;
+  const { totalcases, recovered, activecases, death, vaccinated } = data;
 
   const token = getToken();
   const user = JSON.parse(getUser());

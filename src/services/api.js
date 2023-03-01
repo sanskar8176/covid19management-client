@@ -65,8 +65,8 @@ export const deleteStateCovidData = async (id, state, token) => {
 
 
 
-export const getStateCovidDataForPublic = async () => {
-  return await axios.get(`${serverUrl}/getstatecoviddataforpublic`);
+export const getStateCovidDataForPublic = async (searchState, sort) => {
+  return await axios.post(`${serverUrl}/getstatecoviddataforpublic`,{searchState, sort});
 };
 
 export const getStateCovidDataForUser = async (token, state) => {

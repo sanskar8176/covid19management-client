@@ -47,8 +47,7 @@ const EditStateCovidData = () => {
   });
 
   const [data, setData] = useState(initialValue);
-  const { totalcases, recovered, activecases, death, vaccinated, createdon } =
-    data;
+  const { totalcases, recovered, activecases, death, vaccinated } = data;
   const { id } = useParams();
 
   // console.log(token,"adddata", user)
@@ -59,7 +58,7 @@ const EditStateCovidData = () => {
 
   useEffect(() => {
     loadDataDetails();
-  }, []);
+  },[]);
 
   const loadDataDetails = async () => {
     const res = await getStateCovidData(id, user.state, token);
@@ -102,7 +101,7 @@ const EditStateCovidData = () => {
 
   return (
     <>
-      <Container injectFirst>
+      <Container >
         <Typography variant="h4">{user.state}</Typography>
         <FormControl>
           <InputLabel htmlFor="my-input">Total Cases</InputLabel>

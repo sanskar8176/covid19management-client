@@ -7,6 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Draggable from "react-draggable";
+
 import { Alert, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -35,6 +42,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+function PaperComponent(props) {
+  return (
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+
 export default function UserTables() {
   const [error, setError] = useState({
     status: false,
@@ -42,6 +60,17 @@ export default function UserTables() {
     type: "",
   });
   const [data, setData] = useState([]);
+
+  // for confirmation box
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const token = getToken();
   const user = JSON.parse(getUser());
@@ -61,7 +90,7 @@ export default function UserTables() {
 
   useEffect(() => {
     getData();
-  }, []);
+  },[]);
 
   const calculatDate = (Isodate) => {
     var date = new Date(Isodate);
@@ -79,6 +108,8 @@ export default function UserTables() {
   };
 
   const handleDelete = async (id) => {
+    // confirmation box
+    handleClose();
     const res = await deleteStateCovidData(id, user.state, token);
 
     if (res.data.status === "success") {
@@ -90,7 +121,7 @@ export default function UserTables() {
   };
 
   return (
-    <TableContainer component={Paper} injectFirst>
+    <TableContainer component={Paper} >
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
@@ -106,7 +137,7 @@ export default function UserTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((data) => (
+          {data.sort((a,b) => b.state - a.state).map((data) => (
             <StyledTableRow key={data._id}>
               <StyledTableCell component="th" scope="row">
                 {calculatDate(data.createdon)}
@@ -127,12 +158,45 @@ export default function UserTables() {
                   <Button href={`editstatecoviddata/${data._id}`}>Edit </Button>
                   <Button
                     onClick={() => {
-                      handleDelete(data._id);
+                      handleClickOpen();
                     }}
                   >
-                    {" "}
                     Delete
                   </Button>
+
+                  {/* dialog box  */}
+                  <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    PaperComponent={PaperComponent}
+                    aria-labelledby="draggable-dialog-title"
+                  >
+                    <DialogTitle
+                      style={{ cursor: "move" }}
+                      id="draggable-dialog-title"
+                    >
+                      Warning
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Are you sure you want to delete
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button autoFocus onClick={handleClose}>
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleDelete(data._id);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+
+                  
                 </StyledTableCell>
               )}
             </StyledTableRow>

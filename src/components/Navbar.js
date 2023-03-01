@@ -1,7 +1,6 @@
 import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
 import {
   removeToken,
-  getToken,
   removeUser,
   getUser,
 } from "../services/LocalStorageService";
@@ -9,10 +8,9 @@ import React from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 
 const Navbar = () => {
-  const token = getToken();
   const user = JSON.parse(getUser());
 
-  console.log(token, "nav me ", user);
+  // console.log(token, "nav me ", user);
 
   const navigate = useNavigate();
 
@@ -72,7 +70,7 @@ const Navbar = () => {
               </Button>
             )}
 
-            {!user || user.role == "" ? (
+            {!user || user.role === "" ? (
               <Button
                 component={NavLink}
                 to="/login"

@@ -10,7 +10,8 @@ import Paper from '@mui/material/Paper';
 import {Alert} from '@mui/material'
 import { useEffect, useState } from 'react';
 import {getStateCovidDataForPublic} from '../services/api.js'
-
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -32,7 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export default function PublicTables() {
+export default function PublicTables({searchState}) {
 
   
   const [error, setError] = useState({
@@ -41,19 +42,22 @@ export default function PublicTables() {
     type: ""
   })
   const [data, setData] = useState([]);
-
+  const [sort, setSort] = useState('asc');
 
   const getData=async()=>{
-    const res = await getStateCovidDataForPublic();
+
+    // console.log(searchState, "this is searchState")
+
+    const res = await getStateCovidDataForPublic(searchState, sort);
       // console.log(res, "in usertable");
+
+
     if(res.data.status==='success'){
 
       setData(res.data.data);
       // console.log(data);
-      
-      
-      
-      // console.log(res.data.data);
+
+
       setError({ status: true, msg: res.data.message , type: 'success' })
     }
     else{
@@ -61,6 +65,17 @@ export default function PublicTables() {
 
     }
 }
+
+const calculateTotalcases = ()=>{
+    
+   let totalcasesofallstates= 0;
+  data.map((data)=>{
+    totalcasesofallstates += data.Total;
+  })
+  return totalcasesofallstates;
+
+}
+
 
 const calculatDate = (Isodate)=>{
   var date = new Date(Isodate);
@@ -80,15 +95,16 @@ const calculatDate = (Isodate)=>{
 
 useEffect(() => {
   getData();
-}, [])
+}, [searchState, sort])
+
 
 
   return (
-    <TableContainer component={Paper} injectFirst>
+    <TableContainer component={Paper} >
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>State</StyledTableCell>
+            <StyledTableCell>State <ArrowUpwardIcon onClick={()=>setSort('asc')}/> <ArrowDownwardIcon onClick={()=>setSort('desc')}/> </StyledTableCell>
             <StyledTableCell align="right">Total Cases</StyledTableCell>
             <StyledTableCell align="right">Recovered</StyledTableCell>
             <StyledTableCell align="right">Active Cases</StyledTableCell>
@@ -99,7 +115,7 @@ useEffect(() => {
         </TableHead>
         <TableBody>
           {data.map((data) => (
-            <StyledTableRow key={data._id}>
+            <StyledTableRow key={data._id.State}>
               <StyledTableCell component="th" scope="row">
                 {data._id.State}
               </StyledTableCell>
@@ -111,6 +127,7 @@ useEffect(() => {
               <StyledTableCell align="right">{calculatDate(data.LastUpdated)}</StyledTableCell>
             </StyledTableRow>
           ))}
+        <StyledTableRow ><StyledTableCell >Total Cases of All States {calculateTotalcases()} </StyledTableCell></StyledTableRow>
         </TableBody>
       </Table>
       {error.status  && error.type==='error' && <Alert onClose={()=>{setError({status:false})}} severity={error.type} sx={{ mt: 3 }}>{error.msg}</Alert> }

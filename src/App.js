@@ -11,18 +11,23 @@ import { getToken, getUser } from "./services/LocalStorageService";
 
 function App() {
   const token = getToken();
-  const user = JSON.parse(getUser());
-  console.log(token, "app me ", user);
 
+  const user = JSON.parse(getUser());
+  // console.log(token, "app me ", user);
+
+  
+  
   const ProtectedRoute = ({ children, role, user, token }) => {
+
+    
     if (!token) {
-      console.log("nhi aya token route me ");
+      // console.log("nhi aya token route me ");
       return <Navigate to="/login" />;
     }
 
-    console.log(user, "in protected route");
+    // console.log(user, "in protected route");
     if (user.role === role) {
-      console.log("app me children hai ");
+      // console.log("app me children hai ");
       return children;
     }
 
